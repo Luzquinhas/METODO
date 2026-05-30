@@ -1,6 +1,7 @@
 export default function NotesPage() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white text-zinc-900">
+      
       {/* Coluna 1: Sidebar (Pastas) */}
       <aside className="w-64 border-r border-zinc-200 bg-zinc-50 p-4">
         <h2 className="font-semibold mb-4">Pastas</h2>
@@ -33,6 +34,7 @@ export default function NotesPage() {
           </div>
         </div>
       </main>
+      
     </div>
   );
 }
