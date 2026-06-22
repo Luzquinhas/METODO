@@ -1,575 +1,441 @@
-.app-shell {
-  min-height: 100svh;
+#root {
+  min-height: 100vh;
+  --app-ink: #181a17;
+  --app-chrome: #1e201d;
+  --app-sidebar: #22241f;
+  --app-panel: #292b26;
+  --app-panel-hover: #32342f;
+  --app-control: #343631;
+  --app-line: #36382f;
+  --app-line-soft: #2c2f29;
+  --app-text: #d8dad3;
+  --app-text-strong: #f1f2ed;
+  --app-muted: #a5a89f;
+  --app-green: #2cbe65;
+}
+
+button,
+input,
+textarea {
+  color: inherit;
+}
+
+.evernote-shell {
+  width: 100vw;
+  min-width: 1024px;
+  min-height: 100vh;
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  color: var(--text);
-  background: var(--bg);
+  grid-template-columns: 253px 366px minmax(620px, 1fr);
+  background: var(--app-ink);
+  color: var(--app-text);
+  overflow: hidden;
 }
 
 .sidebar {
-  position: sticky;
-  top: 0;
-  height: 100svh;
+  height: 100vh;
+  background: var(--app-sidebar);
+  border-left: 1px solid var(--app-line);
+  border-right: 1px solid var(--app-line);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 18px 14px 14px;
-  border-right: 1px solid var(--line);
-  background: var(--sidebar);
+  padding: 16px 10px;
 }
 
-.search-field {
-  height: 44px;
+.account-row {
+  height: 36px;
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 0 14px;
-  border-radius: 8px;
-  color: var(--muted);
-  background: var(--control);
+  color: var(--app-text);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.search-field input {
+.account-avatar {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  background:
+    linear-gradient(135deg, transparent 0 45%, rgba(255, 255, 255, 0.38) 46% 55%, transparent 56%),
+    #ff7896;
+  box-shadow: inset 0 0 0 2px rgba(120, 220, 206, 0.7);
+}
+
+.search-box {
+  height: 31px;
+  margin: 22px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: var(--app-control);
+  border: 1px solid #42443d;
+  color: var(--app-muted);
+}
+
+.search-box input {
   width: 100%;
-  color: var(--text);
+  min-width: 0;
   border: 0;
   outline: 0;
   background: transparent;
+  font-size: 12px;
+  color: var(--app-text);
 }
 
-.search-field input::placeholder,
-.scratch-panel textarea::placeholder {
-  color: var(--muted);
-}
-
-.quick-actions,
-.calendar-card header div,
-.profile,
-.section-title,
-.note-footer,
-.recent .section-title button {
-  display: flex;
-  align-items: center;
-}
-
-.quick-actions {
-  gap: 8px;
-}
-
-.new-note,
-.empty-task button {
-  border: 0;
-  cursor: pointer;
-  font-weight: 800;
+.search-box input::placeholder {
+  color: var(--app-muted);
 }
 
 .new-note {
-  height: 39px;
+  height: 32px;
+  border: 0;
+  background: transparent;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 14px;
-  border-radius: 999px;
-  color: #07140c;
-  background: var(--green);
-}
-
-.round-action {
-  width: 39px;
-  height: 39px;
-  display: inline-grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--text);
-  background: var(--panel);
+  gap: 9px;
+  padding: 0 9px;
+  color: #ffffff;
   cursor: pointer;
+  font-size: 12px;
+  text-align: left;
 }
 
-.round-action:hover,
-.nav-list button:hover,
-.more-link:hover,
-.shortcut-grid button:hover,
-.page-tile:hover {
-  border-color: var(--line-strong);
-  background: var(--hover);
-}
-
-.nav-list {
+.new-note-icon {
+  width: 29px;
+  height: 29px;
   display: grid;
-  gap: 3px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #5ed789;
 }
 
-.nav-list button,
-.more-link {
-  min-height: 33px;
+.sidebar-nav {
+  margin-top: 23px;
+  display: grid;
+  gap: 1px;
+}
+
+.nav-link {
+  width: 100%;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: var(--app-text);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  color: var(--text);
-  background: transparent;
-  font-size: 13px;
-  font-weight: 700;
+  gap: 8px;
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 600;
   text-align: left;
   cursor: pointer;
 }
 
-.nav-list button.active {
-  color: var(--text-strong);
-  background: var(--active);
+.nav-link svg {
+  color: var(--app-text);
+  flex: 0 0 auto;
 }
 
-.nav-list button > span:first-child,
-.more-link > span:first-child,
-.round-action {
-  font-size: 16px;
-  line-height: 1;
+.nav-link:hover,
+.nav-link.active {
+  background: var(--app-panel-hover);
+  color: #ffffff;
 }
 
-.more-link {
-  margin-top: auto;
-}
-
-.profile {
-  gap: 10px;
-  padding: 10px 4px 4px;
-  font-size: 12px;
-  color: var(--text-strong);
-}
-
-.avatar,
-.notification,
-.task-illustration {
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-}
-
-.avatar {
-  width: 26px;
-  height: 26px;
-  color: white;
-  background: #08090d;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.notification {
-  width: 24px;
-  height: 24px;
-  margin-left: auto;
-  color: white;
-  background: #5169ff;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.workspace {
-  min-width: 0;
-  padding: 28px 28px 42px;
-  overflow: hidden;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.eyebrow {
-  margin: 0 0 4px;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-h1,
-h2,
-h3,
-p {
-  margin: 0;
-}
-
-h1 {
-  color: var(--text-strong);
-  font-size: clamp(28px, 4vw, 38px);
-  line-height: 1;
-}
-
-h2 {
-  color: var(--text-strong);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: minmax(230px, 1.05fr) minmax(250px, 1fr) minmax(250px, 1.05fr);
-  gap: 28px;
-}
-
-.panel {
-  min-width: 0;
-}
-
-.section-title {
-  min-height: 24px;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
-  color: var(--text-strong);
-}
-
-.notes-row,
-.page-grid {
-  display: grid;
-  gap: 14px;
-}
-
-.notes-row {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.note-card,
-.large-note,
-.calendar-card,
-.empty-task,
-.scratch-panel textarea,
-.recent-empty,
-.page-surface,
-.page-empty,
-.page-tile {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-}
-
-.note-card {
-  min-height: 190px;
+.notes-panel {
+  height: 100vh;
+  background: var(--app-panel);
+  border-right: 1px solid var(--app-line);
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding: 14px;
 }
 
-.note-type {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.note-card h3 {
-  color: var(--text-strong);
-  font-size: 14px;
-  line-height: 1.25;
-}
-
-.note-card p {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.note-swatch {
-  width: 70px;
-  height: 70px;
-  display: grid;
-  place-items: center;
-  margin-top: auto;
-  border-radius: 3px;
-  color: #111;
-  font-size: 30px;
-}
-
-.note-footer {
-  justify-content: space-between;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.large-note {
-  min-height: 238px;
-  display: grid;
-  align-content: start;
-  gap: 34px;
-  padding: 44px 18px 18px;
-}
-
-.large-note h3 {
-  color: var(--text-strong);
-  font-size: clamp(22px, 2.4vw, 29px);
-  line-height: 1.1;
-}
-
-.large-note p {
-  color: var(--text-strong);
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.large-note small {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.calendar-card {
-  min-height: 238px;
-  padding: 26px 28px;
-}
-
-.calendar-card header {
+.notes-titlebar {
+  height: 96px;
+  padding: 32px 24px 0 27px;
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 32px;
-  color: var(--text-strong);
-  font-size: 12px;
 }
 
-.calendar-card header div {
-  gap: 14px;
-  color: var(--muted);
+.notes-titlebar h1 {
+  margin: 6px 0 0;
+  color: var(--app-text-strong);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
-.calendar-card button,
-.recent .section-title button {
-  color: var(--muted);
+.clipper-button {
+  height: 30px;
+  min-width: 88px;
   border: 0;
-  background: transparent;
-}
-
-.calendar-card p {
-  padding-left: 14px;
-  border-left: 2px solid var(--text-strong);
-  color: var(--text-strong);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.shortcut-grid {
-  max-height: 214px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  overflow: auto;
-  padding-right: 5px;
-}
-
-.shortcut-grid button,
-.page-tile {
-  min-width: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid var(--line);
-  color: var(--text-strong);
-  background: var(--panel);
+  border-radius: 3px;
+  background: var(--app-green);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
 }
 
-.shortcut-grid button {
-  height: 43px;
-  padding: 0 14px;
-  border-radius: 8px;
-}
-
-.shortcut-grid span:last-child,
-.page-tile span:last-child {
-  overflow: hidden;
-  font-size: 13px;
-  font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.empty-task {
-  min-height: 194px;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 14px;
-  padding: 22px;
-  text-align: center;
-}
-
-.task-illustration {
-  width: 72px;
-  height: 72px;
-  color: #d8c7ff;
-  background: linear-gradient(135deg, #252733, #4b4256);
-  font-size: 34px;
-}
-
-.empty-task p {
-  max-width: 330px;
-  color: var(--text-strong);
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.empty-task button {
-  min-height: 40px;
-  padding: 0 18px;
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  color: var(--text-strong);
-  background: #111315;
-}
-
-.scratch-panel textarea {
-  width: 100%;
-  min-height: 194px;
-  resize: vertical;
-  padding: 20px;
-  color: var(--text);
-  outline: 0;
-  background: #242317;
-}
-
-.recent {
-  margin-top: 34px;
-}
-
-.recent .section-title {
-  justify-content: flex-start;
-}
-
-.recent .section-title button {
-  gap: 5px;
+.notes-count-row {
+  height: 39px;
+  padding: 0 24px 0 27px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--app-muted);
   font-size: 12px;
 }
 
-.recent-empty {
-  min-height: 98px;
-  display: grid;
-  place-items: center;
-  color: #252525;
+.notes-count-row div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--app-muted);
 }
 
-.page-grid {
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+.note-list {
+  overflow: hidden auto;
 }
 
-.page-grid.compact {
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+.note-card {
+  width: 100%;
+  min-height: 129px;
+  position: relative;
+  display: block;
+  border: 0;
+  border-top: 1px solid var(--app-line);
+  background: var(--app-panel);
+  padding: 18px 26px 12px;
+  color: var(--app-text);
+  text-align: left;
+  cursor: pointer;
 }
 
-.page-tile {
-  min-height: 78px;
-  padding: 0 18px;
+.note-card:last-child {
+  border-bottom: 1px solid var(--app-line);
 }
 
-.page-surface {
-  min-height: 360px;
-  padding: 24px;
+.note-card.selected,
+.note-card:hover {
+  background: var(--app-panel-hover);
 }
 
-.page-empty {
-  min-height: 220px;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 12px;
-  color: var(--muted);
-  text-align: center;
-}
-
-.page-empty > span {
-  font-size: 34px;
-}
-
-.page-empty h2 {
-  color: var(--text-strong);
-  font-size: 18px;
-}
-
-.page-empty p {
-  max-width: 360px;
+.note-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--app-text-strong);
   font-size: 13px;
-  line-height: 1.45;
+  font-weight: 600;
 }
 
-@media (max-width: 1100px) {
-  .app-shell {
-    grid-template-columns: 78px minmax(0, 1fr);
-  }
-
-  .sidebar {
-    align-items: center;
-    padding-inline: 10px;
-  }
-
-  .search-field,
-  .new-note,
-  .nav-list button span:last-child,
-  .more-link span:last-child,
-  .profile strong {
-    display: none;
-  }
-
-  .quick-actions {
-    flex-direction: column;
-  }
-
-  .nav-list button,
-  .more-link {
-    width: 42px;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .notification {
-    margin-left: 0;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.note-card p {
+  max-width: 260px;
+  min-height: 34px;
+  margin: 0 0 7px;
+  color: #c8cac1;
+  font-size: 12px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
-@media (max-width: 760px) {
-  .app-shell {
-    grid-template-columns: 1fr;
+.note-card span {
+  display: block;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.note-card i {
+  width: 4px;
+  height: 4px;
+  position: absolute;
+  right: 55px;
+  bottom: 31px;
+  border-radius: 50%;
+  background: #e43e35;
+}
+
+.editor {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 44px 58px minmax(0, 1fr) 49px;
+  background: var(--app-ink);
+  color: var(--app-text);
+}
+
+.document-header {
+  background: var(--app-chrome);
+  border-top: 1px solid var(--app-line);
+  border-bottom: 1px solid var(--app-line-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 18px;
+}
+
+.document-left-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+.document-left-tools > span:first-of-type {
+  width: 1px;
+  height: 18px;
+  background: #4a4d44;
+}
+
+.document-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--app-text);
+  font-size: 12px;
+}
+
+.document-actions button {
+  border: 0;
+  border-radius: 3px;
+  background: var(--app-green);
+  color: #ffffff;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.document-actions .more-button {
+  width: 28px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--app-control);
+  color: var(--app-text);
+}
+
+.editor-toolbar {
+  height: 58px;
+  background: var(--app-chrome);
+  border-bottom: 1px solid var(--app-line-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 42px;
+  overflow: hidden;
+}
+
+.toolbar-control {
+  height: 22px;
+  min-width: 20px;
+  border: 0;
+  background: transparent;
+  color: #92968c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 2px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.toolbar-control.wide {
+  min-width: 74px;
+  justify-content: space-between;
+  color: var(--app-muted);
+}
+
+.toolbar-control:hover {
+  color: var(--app-text-strong);
+}
+
+.note-editor {
+  min-height: 0;
+  overflow: hidden auto;
+  padding: 17px 42px 40px;
+  background: var(--app-ink);
+}
+
+.editor-title {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--app-text-strong);
+  font-size: 33px;
+  line-height: 1.18;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.body-label {
+  margin-top: 19px;
+  color: var(--app-text-strong);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editor-body {
+  width: min(760px, 100%);
+  height: 240px;
+  margin-top: 12px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: var(--app-text-strong);
+  font-size: 13px;
+  line-height: 1.75;
+  padding-left: 33px;
+}
+
+.editor-body {
+  background-image:
+    linear-gradient(var(--app-text-strong), var(--app-text-strong)),
+    linear-gradient(var(--app-text-strong), var(--app-text-strong)),
+    linear-gradient(var(--app-text-strong), var(--app-text-strong));
+  background-position: 14px 16px, 14px 39px, 14px 62px;
+  background-size: 3px 3px, 3px 3px, 3px 3px;
+  background-repeat: no-repeat;
+}
+
+.editor-footer {
+  height: 49px;
+  background: var(--app-chrome);
+  border-top: 1px solid var(--app-line-soft);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 18px;
+  color: var(--app-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 1180px) {
+  .evernote-shell {
+    grid-template-columns: 228px 330px minmax(560px, 1fr);
   }
 
-  .sidebar {
-    position: static;
-    height: auto;
-    flex-direction: row;
-    justify-content: space-between;
-    overflow-x: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .quick-actions,
-  .more-link,
-  .profile {
-    display: none;
-  }
-
-  .nav-list {
-    display: flex;
-    min-width: max-content;
-  }
-
-  .workspace {
-    padding: 22px 16px 42px;
-  }
-
-  .topbar {
-    align-items: center;
-    margin-bottom: 22px;
-  }
-
-  .dashboard-grid,
-  .notes-row,
-  .shortcut-grid {
-    grid-template-columns: 1fr;
+  .notes-titlebar,
+  .notes-count-row,
+  .note-card {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }

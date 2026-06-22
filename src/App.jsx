@@ -1,345 +1,321 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import './App.css'
 import {
-  MdHome,
-  MdLink,
-  MdNoteAlt,
-  MdCheckBox,
+  MdAdd,
   MdAttachFile,
-  MdCalendarToday,
-  MdSquare,
-  MdLibraryBooks,
+  MdCheckBoxOutlineBlank,
+  MdChevronRight,
+  MdCode,
+  MdDeleteOutline,
+  MdFormatAlignLeft,
+  MdFormatBold,
+  MdFormatItalic,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+  MdFormatUnderlined,
+  MdHorizontalRule,
+  MdInsertDriveFile,
+  MdKeyboardArrowDown,
+  MdLink,
   MdLocalOffer,
-  MdShare,
-  MdApps,
+  MdLockOutline,
   MdMoreHoriz,
+  MdNotes,
+  MdOpenInFull,
+  MdOutlineChecklist,
+  MdOutlineLightbulb,
+  MdSearch,
+  MdShare,
+  MdSort,
+  MdTableChart,
+  MdTextFields,
 } from 'react-icons/md'
 
-const notes = []
-
-const navItems = [
-  { icon: MdHome, label: 'Início' },
-  { icon: MdLink, label: 'Atalhos' },
-  { icon: MdNoteAlt, label: 'Notas' },
-  { icon: MdCheckBox, label: 'Tarefas' },
-  { icon: MdAttachFile, label: 'Arquivos' },
-  { icon: MdCalendarToday, label: 'Calendário' },
-  { icon: MdSquare, label: 'Modelos' },
-  { icon: MdLibraryBooks, label: 'Cadernos' },
-  { icon: MdLocalOffer, label: 'Etiquetas' },
+const navSections = [
+  { icon: MdChevronRight, label: 'Atalhos' },
+  { icon: MdNotes, label: 'Todas as notas', active: true },
+  { icon: MdInsertDriveFile, label: 'Cadernos' },
   { icon: MdShare, label: 'Compartilhado comigo' },
-  { icon: MdApps, label: 'Spaces' },
+  { icon: MdLocalOffer, label: 'Etiquetas' },
+  { icon: MdDeleteOutline, label: 'Lixeira' },
+  { icon: MdOutlineLightbulb, label: 'Upgrade' },
 ]
 
-const shortcuts = [
-  'Cursos',
-  'Hobbies',
-  'Novas senhas dos sites',
-  'Motivação / Assistir',
-  'Prioridades de amanhã',
-  'Hoje',
-  'Musiquinha',
-  'Minha nova vida',
+const initialNotes = [
+  {
+    id: '1',
+    title: 'Modo escuro do Evernote',
+    description: 'O que esperar? O fundo da nota é preto em vez de cinza escuro.',
+    date: 'há poucos minutos',
+    body: [
+      'O fundo das notas é preto em vez de cinza escuro.',
+      'A lista de notas é um pouco mais clara.',
+      'As cores, por exemplo o botão de nova nota, não são tão intensas.',
+    ],
+  },
+  {
+    id: '2',
+    title: 'O poder da nota',
+    description: 'Bem-vindo ao Evernote. Ele é ótimo para anotar ideias, acompanhar tarefas e mais.',
+    date: '18 jan',
+    body: ['Capture ideias rapidamente.', 'Organize tarefas e referências em um só lugar.'],
+    hasMarker: true,
+  },
+  {
+    id: '3',
+    title: 'A maravilha dos anexos',
+    description: 'Adicione anexos. Arraste documentos, PDFs, fotos, vídeos e áudios direto para a nota.',
+    date: '18 jan',
+    body: ['Arraste documentos, PDFs, fotos, vídeos e áudios diretamente para a nota.'],
+  },
+  {
+    id: '4',
+    title: 'A alegria do Web Clipping',
+    description: 'Salve páginas da web diretamente no Evernote para guardar qualquer coisa da internet.',
+    date: '18 jan',
+    body: ['Salve páginas da web diretamente no caderno para consultar depois.'],
+  },
 ]
 
-const pageDetails = {
-  Início: 'Painel pessoal',
-  Atalhos: 'Acesso rápido',
-  Notas: 'Suas anotações',
-  Tarefas: 'Organização',
-  Arquivos: 'Biblioteca',
-  Calendário: 'Agenda',
-  Modelos: 'Templates',
-  Cadernos: 'Coleções',
-  Etiquetas: 'Organização',
-  'Compartilhado comigo': 'Colaboração',
-}
-
-const emptyPages = {
-  Arquivos: {
-    icon: '▱',
-    title: 'Nenhum arquivo adicionado',
-    description: 'Os arquivos anexados às suas notas aparecerão aqui.',
-  },
-  Modelos: {
-    icon: '⌘',
-    title: 'Nenhum modelo salvo',
-    description: 'Crie modelos quando quiser repetir uma estrutura de anotação.',
-  },
-  Cadernos: {
-    icon: '▭',
-    title: 'Nenhum caderno criado',
-    description: 'Agrupe suas notas em cadernos quando começar a organizar o conteúdo.',
-  },
-  Etiquetas: {
-    icon: '◇',
-    title: 'Nenhuma etiqueta criada',
-    description: 'As etiquetas ajudam a encontrar anotações por tema.',
-  },
-  'Compartilhado comigo': {
-    icon: '⌯',
-    title: 'Nada compartilhado ainda',
-    description: 'Notas compartilhadas com você ficarão reunidas nesta página.',
-  },
-}
-
-function Sidebar({ activePage, onPageChange }) {
+function Sidebar({ search, onSearchChange, onNewNote }) {
   return (
     <aside className="sidebar">
-      <label className="search-field">
-        <MdLink size={18} style={{ opacity: 0.6 }} />
-        <input type="search" placeholder="Pesquisa" />
-      </label>
-
-      <div className="quick-actions">
-        <button className="new-note" type="button">
-          <span aria-hidden="true">＋</span>
-          Nota
-        </button>
-        <button className="round-action" type="button" aria-label="Sincronizar">
-          ↻
-        </button>
-        <button className="round-action" type="button" aria-label="Nova tarefa">
-          <MdCheckBox size={16} />
-        </button>
-        <button className="round-action" type="button" aria-label="Mais ações">
-          <MdMoreHoriz size={16} />
-        </button>
+      <div className="account-row">
+        <div className="account-avatar">N</div>
+        <span>Modo Night Eye dark...</span>
       </div>
 
-      <nav className="nav-list" aria-label="Navegação principal">
-        {navItems.map((item) => {
+      <label className="search-box">
+        <input
+          type="search"
+          placeholder="Pesquisar em todas as notas..."
+          value={search}
+          onChange={(event) => onSearchChange(event.target.value)}
+        />
+        <MdSearch size={16} />
+      </label>
+
+      <button className="new-note" type="button" onClick={onNewNote}>
+        <span className="new-note-icon">
+          <MdAdd size={19} />
+        </span>
+        <strong>Nova nota</strong>
+      </button>
+
+      <nav className="sidebar-nav" aria-label="Navegação principal">
+        {navSections.map((item) => {
           const Icon = item.icon
           return (
             <button
-              className={activePage === item.label ? 'active' : ''}
-              key={item.label}
-              onClick={() => onPageChange(item.label)}
+              className={item.active ? 'nav-link active' : 'nav-link'}
               type="button"
+              key={item.label}
             >
-              <Icon size={20} />
+              <Icon size={15} />
               <span>{item.label}</span>
             </button>
           )
         })}
       </nav>
-
-      <button className="more-link" type="button">
-        <MdMoreHoriz size={20} />
-        <span>Mais</span>
-      </button>
-
-      <div className="profile">
-        <div className="avatar">J</div>
-        <strong>José Ricardo</strong>
-        <span className="notification">1</span>
-      </div>
     </aside>
   )
 }
 
-function Header({ activePage }) {
+function NotesPanel({ notes, selectedNoteId, onSelectNote }) {
   return (
-    <header className="topbar">
-      <div>
-        <p className="eyebrow">{pageDetails[activePage]}</p>
-        <h1>{activePage}</h1>
+    <section className="notes-panel">
+      <div className="notes-titlebar">
+        <h1>Todas as notas</h1>
+        <button className="clipper-button" type="button">
+          Web Clipper
+        </button>
       </div>
-      <button className="round-action edit-panel" type="button" aria-label="Editar painel">
-        ✎
-      </button>
-    </header>
-  )
-}
 
-function NoteCard({ note }) {
-  return (
-    <article className="note-card">
-      <div className="note-type">{note.tag}</div>
-      <h3>{note.title}</h3>
-      <p>{note.description}</p>
-      <div className="note-swatch" style={{ background: note.color }}>
-        ✎
-      </div>
-      <div className="note-footer">
-        <span>{note.date}</span>
-        {note.pinned && <span aria-label="Nota fixada">★</span>}
-      </div>
-    </article>
-  )
-}
-
-function CalendarCard() {
-  return (
-    <div className="calendar-card">
-      <header>
-        <strong>quinta-feira, 4 de junho de 2026</strong>
+      <div className="notes-count-row">
+        <span>{notes.length} notas</span>
         <div>
-          <button type="button">Hoje</button>
-          <MdMoreHoriz size={16} style={{ opacity: 0.5 }} />
-          <MdMoreHoriz size={16} style={{ opacity: 0.5 }} />
+          <MdSort size={16} />
+          <MdLockOutline size={15} />
+        </div>
+      </div>
+
+      <div className="note-list">
+        {notes.map((note) => (
+          <button
+            className={note.id === selectedNoteId ? 'note-card selected' : 'note-card'}
+            type="button"
+            key={note.id}
+            onClick={() => onSelectNote(note.id)}
+          >
+            <strong>{note.title}</strong>
+            <p>{note.description}</p>
+            <span>{note.date}</span>
+            {note.hasMarker && <i aria-hidden="true" />}
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ToolbarButton({ children, wide = false }) {
+  return (
+    <button className={wide ? 'toolbar-control wide' : 'toolbar-control'} type="button">
+      {children}
+    </button>
+  )
+}
+
+function Editor({ note, onUpdateNote }) {
+  const bodyText = note.body.join('\n')
+
+  return (
+    <section className="editor">
+      <header className="document-header">
+        <div className="document-left-tools">
+          <MdOpenInFull size={13} />
+          <span />
+          <MdInsertDriveFile size={13} />
+          <span>Meu caderno</span>
+        </div>
+        <div className="document-actions">
+          <span>Somente você</span>
+          <button type="button" onClick={() => onUpdateNote(note)}>
+            Compartilhar
+          </button>
+          <button className="more-button" type="button">
+            <MdMoreHoriz size={17} />
+          </button>
         </div>
       </header>
-      <p>Nenhum evento para hoje</p>
-    </div>
-  )
-}
 
-function ShortcutsPanel() {
-  return (
-    <section className="panel shortcuts-panel">
-      <div className="section-title">
-        <h2>Atalhos</h2>
-        <MdMoreHoriz size={18} style={{ opacity: 0.6 }} />
+      <div className="editor-toolbar">
+        <ToolbarButton wide>
+          Padrão
+          <MdKeyboardArrowDown size={12} />
+        </ToolbarButton>
+        <ToolbarButton>
+          14
+          <MdKeyboardArrowDown size={12} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdTextFields size={13} />
+          <MdKeyboardArrowDown size={12} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatBold size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatItalic size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatUnderlined size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdCode size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdAttachFile size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdCheckBoxOutlineBlank size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdTableChart size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdHorizontalRule size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatListBulleted size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatListNumbered size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdOutlineChecklist size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdFormatAlignLeft size={13} />
+        </ToolbarButton>
+        <ToolbarButton>
+          <MdLink size={13} />
+        </ToolbarButton>
       </div>
-      <div className="shortcut-grid">
-        {shortcuts.map((shortcut) => (
-          <button type="button" key={shortcut}>
-            <MdNoteAlt size={16} />
-            <span>{shortcut}</span>
-          </button>
-        ))}
-      </div>
+
+      <article className="note-editor">
+        <input
+          className="editor-title"
+          value={note.title}
+          onChange={(event) => onUpdateNote({ ...note, title: event.target.value })}
+          aria-label="Título da nota"
+        />
+
+        <div className="body-label">O que esperar?</div>
+
+        <textarea
+          className="editor-body"
+          value={bodyText}
+          onChange={(event) => onUpdateNote({ ...note, body: event.target.value.split('\n') })}
+          aria-label="Conteúdo da nota"
+        />
+      </article>
+
+      <footer className="editor-footer">
+        <MdLocalOffer size={17} />
+        <span>Adicionar etiqueta</span>
+      </footer>
     </section>
   )
-}
-
-function TasksPanel() {
-  return (
-    <section className="panel tasks-panel">
-      <div className="section-title">
-        <h2>Minhas tarefas</h2>
-      </div>
-      <div className="empty-task">
-        <div className="task-illustration">✓</div>
-        <p>Adicione tarefas em qualquer nota e priorize-as com prazos e sinalizadores.</p>
-        <button type="button">Adicionar nova tarefa</button>
-      </div>
-    </section>
-  )
-}
-
-function DashboardPage() {
-  const pinnedNote = notes.find((note) => note.pinned)
-
-  return (
-    <>
-      <section className="dashboard-grid" aria-label="Painel inicial">
-        <section className="panel notes-panel">
-        <div className="section-title">
-            <h2>Notas</h2>
-            <MdMoreHoriz size={16} style={{ opacity: 0.6 }} />
-          </div>
-          {notes.length > 0 && (
-            <div className="notes-row">
-              {notes.map((note) => (
-                <NoteCard note={note} key={note.title} />
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section className="panel pinned-note">
-          <div className="section-title">
-            <h2>Nota fixada</h2>
-          </div>
-          {pinnedNote && (
-            <article className="large-note">
-              <h3>{pinnedNote.title}</h3>
-              <p>{pinnedNote.description}</p>
-              <small>{pinnedNote.date}</small>
-            </article>
-          )}
-        </section>
-
-        <section className="panel calendar-panel">
-          <div className="section-title">
-            <h2>Calendário</h2>
-          </div>
-          <CalendarCard />
-        </section>
-
-        <ShortcutsPanel />
-        <TasksPanel />
-
-        <section className="panel scratch-panel">
-          <div className="section-title">
-            <h2>Bloco de anotações</h2>
-          </div>
-          <textarea placeholder="Comece a escrever..." aria-label="Bloco de anotações" />
-        </section>
-      </section>
-
-      <section className="recent">
-        <div className="section-title">
-          <h2>Capturados recentemente</h2>
-          <button type="button">
-            Recortes da web
-            <MdMoreHoriz size={14} style={{ marginLeft: '4px', opacity: 0.6 }} />
-          </button>
-        </div>
-        <div className="recent-empty">▣</div>
-      </section>
-    </>
-  )
-}
-
-function NotesPage() {
-  if (notes.length === 0) return null
-
-  return (
-    <section className="page-grid">
-      {notes.map((note) => (
-        <NoteCard note={note} key={note.title} />
-      ))}
-    </section>
-  )
-}
-
-function EmptyPage({ icon, title, description }) {
-  return (
-    <section className="page-surface">
-      <div className="page-empty">
-        <span aria-hidden="true">{icon}</span>
-        <h2>{title}</h2>
-        <p>{description}</p>
-      </div>
-    </section>
-  )
-}
-
-function PageContent({ activePage }) {
-  if (activePage === 'Início') return <DashboardPage />
-  if (activePage === 'Notas') return <NotesPage />
-  if (activePage === 'Atalhos') {
-    return (
-      <section className="page-grid compact">
-        {shortcuts.map((shortcut) => (
-          <button className="page-tile" type="button" key={shortcut}>
-            <MdNoteAlt size={18} />
-            <span>{shortcut}</span>
-          </button>
-        ))}
-      </section>
-    )
-  }
-  if (activePage === 'Tarefas') return <TasksPanel />
-  if (activePage === 'Calendário') return <CalendarCard />
-
-  return <EmptyPage {...emptyPages[activePage]} />
 }
 
 function App() {
-  const [activePage, setActivePage] = useState('Início')
+  const [search, setSearch] = useState('')
+  const [notes, setNotes] = useState(initialNotes)
+  const [selectedNoteId, setSelectedNoteId] = useState(initialNotes[0].id)
+
+  const filteredNotes = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    if (!term) return notes
+    return notes.filter((note) => {
+      const haystack = `${note.title} ${note.description} ${note.body.join(' ')}`.toLowerCase()
+      return haystack.includes(term)
+    })
+  }, [notes, search])
+
+  const selectedNote = notes.find((note) => note.id === selectedNoteId) || filteredNotes[0] || notes[0]
+
+  const updateNote = (nextNote) => {
+    setNotes((current) =>
+      current.map((note) =>
+        note.id === nextNote.id
+          ? {
+              ...nextNote,
+              description: nextNote.body[0] || note.description,
+            }
+          : note,
+      ),
+    )
+  }
+
+  const createNote = () => {
+    const note = {
+      id: `${Date.now()}`,
+      title: 'Nota sem título',
+      description: 'Comece a escrever...',
+      date: 'agora',
+      body: [''],
+    }
+    setNotes((current) => [note, ...current])
+    setSelectedNoteId(note.id)
+  }
 
   return (
-    <div className="app-shell">
-      <Sidebar activePage={activePage} onPageChange={setActivePage} />
-      <main className="workspace" id="main">
-        <Header activePage={activePage} />
-        <PageContent activePage={activePage} />
-      </main>
-    </div>
+    <main className="evernote-shell">
+      <Sidebar search={search} onSearchChange={setSearch} onNewNote={createNote} />
+      <NotesPanel notes={filteredNotes} selectedNoteId={selectedNote?.id} onSelectNote={setSelectedNoteId} />
+      <Editor note={selectedNote} onUpdateNote={updateNote} />
+    </main>
   )
 }
 
